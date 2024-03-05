@@ -24,6 +24,11 @@ class ProductModelCollection:
                 self._products.remove(product)
                 return
 
+    def get(self, index) -> ProductModel | None:
+        if index < self.count():
+            return self._products[index]
+        
+        return None
 
     def forEach(self, eachProductCB: Callable[[ProductModel], None]):
         for product in self._products:

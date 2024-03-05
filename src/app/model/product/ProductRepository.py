@@ -10,19 +10,19 @@ from typing import cast
 class ProductRepository(ABC):
 
     @abstractmethod
-    def create(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def create(self, product: ProductModel):
         pass
     
     @abstractmethod
-    def update(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def update(self, product: ProductModel):
         pass
 
     @abstractmethod
-    def delete(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def delete(self, product: ProductModel):
         pass
 
     @abstractmethod
-    def findOneByID(self,id: str) -> ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel | None:
+    def findOneByID(self,id: str) -> ProductModel | None:
         pass
 
     @abstractmethod
@@ -39,20 +39,20 @@ class InMemoryProductRepository(ProductRepository):
     def __init__(self) -> None:
         super().__init__()
         
-        self.products: dict[str, ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel] = {}
+        self.products: dict[str, ProductModel] = {}
 
-    def create(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def create(self, product: ProductModel):
         self.products[product.id] = product
 
 
-    def update(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def update(self, product: ProductModel):
         self.products[product.id] = product
 
-    def delete(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def delete(self, product: ProductModel):
         del self.products[product.id]
 
 
-    def findOneByID(self, id: str) -> ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel | None:
+    def findOneByID(self, id: str) -> ProductModel | None:
         return self.products.get(id)
 
     
@@ -80,18 +80,18 @@ class MySQLProductRepository(ProductRepository):
 
         self.mysqlProvider: MySQLProvider = mysqlProvider
 
-    def create(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def create(self, product: ProductModel):
         sql = f"INSERT INTO products (id, ica, name, frecuency, price, type) VALUES ('{product.id}', '{product.ica}', '{product.name}', {product.frecuency}, {product.price}, '{product.type.name}')"
         self.mysqlProvider.execute(sql)
 
         if issubclass(product.__class__, ProductAntibioticModel):
             product = cast(ProductAntibioticModel, product)
-            sql = f"INSERT INTO antibiotic_products (id, product_id, dose, animal_type) VALUES ('{product.id}', '{product.id}', '{product.dose}', '{product.animalType.name}')"
+            sql = f"INSERT INTO antibiotic_products (id, product_id, dose, animal_type) VALUES ('{product.id}', '{product.id}', {product.dose}, '{product.animalType.name}')"
             self.mysqlProvider.execute(sql)
 
         if issubclass(product.__class__, ProductPlagueControlModel):
             product = cast(ProductPlagueControlModel, product)
-            sql = f"INSERT INTO plague_control_products (id, product_id, grace_period) VALUES ('{product.id}', '{product.id}', '{product.gracePeriod}')"
+            sql = f"INSERT INTO plague_control_products (id, product_id, grace_period) VALUES ('{product.id}', '{product.id}', {product.gracePeriod})"
             self.mysqlProvider.execute(sql)
 
         if issubclass(product.__class__, ProductFertilizerControlModel):
@@ -100,7 +100,7 @@ class MySQLProductRepository(ProductRepository):
             self.mysqlProvider.execute(sql)
 
 
-    def update(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def update(self, product: ProductModel):
         sql = f"UPDATE products SET ica = '{product.ica}', name='{product.name}', frecuency={product.frecuency}, price={product.price}  WHERE id = '{product.id}' LIMIT 1"
         self.mysqlProvider.execute(sql)
 
@@ -120,12 +120,12 @@ class MySQLProductRepository(ProductRepository):
             self.mysqlProvider.execute(sql)
 
 
-    def delete(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def delete(self, product: ProductModel):
         sql = f"DELETE FROM products WHERE id = '{product.id}' LIMIT 1"
         self.mysqlProvider.execute(sql)
 
 
-    def findOneByID(self, id: str) -> ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel | None:
+    def findOneByID(self, id: str) -> ProductModel | None:
         sql = f"SELECT id, ica, name, frecuency, price, type FROM products WHERE id='{id}' LIMIT 1"
         rows = self.mysqlProvider.fetch(sql)
 

@@ -24,6 +24,11 @@ class CustomerModelCollection:
                 self._customers.remove(customer)
                 return
 
+    def get(self, index: int) -> CustomerModel | None:
+        if index < self.count():
+            return self._customers[index]
+        
+        return None
 
     def forEach(self, eachCustomerCB: Callable[[CustomerModel], None]):
         for customer in self._customers:

@@ -30,7 +30,7 @@ class ProductController:
         self._view.selectProduct(product)
 
 
-    def _createProduct(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):        
+    def _createProduct(self, product: ProductModel):        
        
         if product.id == "":
             product.id = str(uuid4())
@@ -42,7 +42,7 @@ class ProductController:
         print(f"saved customer {product}")
 
 
-    def _deleteProduct(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def _deleteProduct(self, product: ProductModel):
         self.productRepository.delete(product)
         
         self.products = self.productRepository.findAll()
@@ -51,7 +51,7 @@ class ProductController:
         print(f"deleted customer {product}")
 
 
-    def _updateProduct(self, product: ProductAntibioticModel | ProductFertilizerControlModel | ProductPlagueControlModel):
+    def _updateProduct(self, product: ProductModel):
         self.productRepository.update(product)
         
         self.customers = self.productRepository.findAll()

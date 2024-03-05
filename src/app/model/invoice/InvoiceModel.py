@@ -2,18 +2,18 @@ from datetime import date
 from typing import Callable
 from src.app.model.customer.CustomerModel import CustomerModel
 
-from src.app.model.product.ProductModel import ProductAntibioticModel, ProductFertilizerControlModel, ProductNoneModel, ProductPlagueControlModel
+from src.app.model.product.ProductModel import ProductAntibioticModel, ProductFertilizerControlModel, ProductModel, ProductNoneModel, ProductPlagueControlModel
 
 
 class InvoiceLineModel:
     
     def __init__(self) -> None:
         self.id: str
-        self.product: ProductPlagueControlModel | ProductFertilizerControlModel | ProductAntibioticModel | ProductNoneModel
+        self.product: ProductModel
         self.quantity: float
         self.totalAmount: float
 
-    def setProduct(self, product: ProductPlagueControlModel | ProductFertilizerControlModel | ProductAntibioticModel):
+    def setProduct(self, product: ProductModel):
         self.product = product
         self.totalAmount = product.price * self.quantity
 

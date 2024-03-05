@@ -1,3 +1,4 @@
+from datetime import datetime
 from faker import Faker
 from uuid import uuid4
 
@@ -33,17 +34,17 @@ class ProductModelFactory:
             product.name = str(self.faker.name())
             product.price = float(str(self.faker.random_int(10, 50)))
             product.frecuency = int(str(self.faker.random_int(10, 50)))
-            product.type = PRODUCT_TYPE.PlageControl
-            product.lastApplicationDate = self.faker.date()
+            product.type = PRODUCT_TYPE.FertilizerControl
+            product.lastApplicationDate = datetime.strptime(self.faker.date(), "%Y-%m-%d")
 
-        if product_type_id == PRODUCT_TYPE.Antibiotic.name:
+        if product_type_id == 3:
             product = ProductAntibioticModel()
             product.id = str(uuid4())
             product.ica = str(self.faker.random_int(100000000, 9999999999999))
             product.name = str(self.faker.name())
             product.price = float(str(self.faker.random_int(10, 50)))
             product.frecuency = int(str(self.faker.random_int(10, 50)))
-            product.type = PRODUCT_TYPE.PlageControl
+            product.type = PRODUCT_TYPE.Antibiotic
             product.dose = int(self.faker.random_int(10, 50))
             product.animalType = ANIMAL_TYPE.Bovino
 

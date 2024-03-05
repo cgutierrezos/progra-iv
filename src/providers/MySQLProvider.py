@@ -30,6 +30,12 @@ class MySQLProvider:
         self.cursor.execute(sql)
         self.connection.commit()
 
+    def executeMany(self, sqls: list[str]):
+        for sql in sqls:
+            self.cursor.execute(sql)
+        
+        self.connection.commit()
+
     def fetch(self, sql: str) -> List[connector.connection.RowType] | Any:
         self.cursor.execute(sql)
         return self.cursor.fetchall()
